@@ -8,7 +8,7 @@ dotenv.config({
 const config = {
   port: process.env.PORT || 3000,
   database_url: process.env.DATABASE_URL,
-  bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
+  bcrypt_salt_rounds: Number(process.env.BCRYPT_SALT_ROUNDS),
   app_url: process.env.APP_URL,
   jwt_secret: process.env.JWT_SECRET,
   jwt_refresh_secret: process.env.JWT_REFRESH_SECRET,

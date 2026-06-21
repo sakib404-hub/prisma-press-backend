@@ -9,7 +9,7 @@ model User {
     updatedAt DateTime @updatedAt
 
     //? making an optional field 
-    profileId Profile?
+    profile Profile?
 
     //?chganging the table name from user to users
     @@map("users")
