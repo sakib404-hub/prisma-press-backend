@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors"
 import express, { Application, Request, Response }from "express";
 import config from "./config/dotenv";
+import { prisma } from "./lib/prisma";
 
 const app : Application = express();
 
@@ -16,7 +17,7 @@ app.use(cors({
 }))
 
 //? creating a first route for testing the server
-app.get('/', (req : Request, res : Response)=>{
+app.get('/', async(req : Request, res : Response)=>{
     res.status(200).json({message: 'Hello, World!'});
 })
 

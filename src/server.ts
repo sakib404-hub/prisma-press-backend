@@ -14,7 +14,7 @@ const main = async () =>{
         console.log("Database connected Successfully!");
 
 
-        app.listen(PORT, ()=>{
+        app.listen(PORT, async()=>{
             console.log(`This app is listening from port number : ${PORT}`);
         })
 
