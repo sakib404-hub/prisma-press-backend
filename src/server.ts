@@ -1,6 +1,10 @@
 import app from "./app";
+import config from "./config/dotenv";
 import { prisma } from "./lib/prisma";
+import "dotenv/config";
 
+
+const PORT = config.port;
 
 const main = async () =>{
     try{
@@ -10,8 +14,8 @@ const main = async () =>{
         console.log("Database connected Successfully!");
 
 
-        app.listen(3000, ()=>{
-            console.log('This app is listening from port number : 3000');
+        app.listen(PORT, ()=>{
+            console.log(`This app is listening from port number : ${PORT}`);
         })
 
     }catch(err){
