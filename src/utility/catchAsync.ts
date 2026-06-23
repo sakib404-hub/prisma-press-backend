@@ -11,7 +11,6 @@ const catchAsync = (fn : RequestHandler)=>{
             const errMessage = error instanceof Error ? error.message : "Something went Wrong!";
 
             return sendResponse(res, status.INTERNAL_SERVER_ERROR, false, errMessage);
-
         }
     }
 }
