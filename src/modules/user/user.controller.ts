@@ -22,8 +22,25 @@ const creatingUser = async (req: Request, res: Response) => {
     }
 }
 
+const getAllUsers = async(req : Request, res : Response)=>{
+    try{
+
+        const users = await userService.getAllUsersFromDB();
+
+        sendResponse(res,HttpStatus.OK, true, "User Information fetched successfully!", users);
+
+    }catch(err){
+        
+        const errMessage = err instanceof Error ? err.message : "Something went Wrong!";
+
+        return sendResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, false, errMessage);
+
+    }
+}
+
 const userController = {
-    creatingUser
+    creatingUser,
+    getAllUsers
 }
 
 export default userController;

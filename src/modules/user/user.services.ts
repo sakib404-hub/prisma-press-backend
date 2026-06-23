@@ -55,8 +55,19 @@ const createUserIntoDB = async(payload : PayLoad)=>{
     return user;
 }
 
+const getAllUsersFromDB = async()=>{
+    const users = await prisma.user.findMany({
+        include : {
+            profile : true
+        }
+    });
+    return users;
+}
+
+
 const userService = {
-    createUserIntoDB
+    createUserIntoDB,
+    getAllUsersFromDB
 }
 
 export default userService;
