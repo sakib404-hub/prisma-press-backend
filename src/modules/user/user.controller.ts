@@ -1,7 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import HttpStatus from "http-status";
 import userService from "./user.services";
 import sendResponse from "../../utility/sendResponse";
+import catchAsync from "../../utility/catchAsync";
+
 
 
 
@@ -22,6 +24,17 @@ const creatingUser = async (req: Request, res: Response) => {
     }
 }
 
+
+const registerUser = catchAsync(async(req : Request, res : Response, next : NextFunction )=>{
+
+    const payload = req.body;
+
+    const user = await userService.createUserIntoDB(payload);
+
+    sendResponse(res, HttpStatus.CREATED, true, "User Registratation Successfull", user)
+
+})
+
 const getAllUsers = async(req : Request, res : Response)=>{
     try{
 
@@ -40,6 +53,7 @@ const getAllUsers = async(req : Request, res : Response)=>{
 
 const userController = {
     creatingUser,
+    registerUser,
     getAllUsers
 }
 
