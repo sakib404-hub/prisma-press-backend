@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import HttpStatus from "http-status";
 import userService from "./user.services";
+import sendResponse from "../../utility/sendResponse";
 
 
 
@@ -10,24 +11,14 @@ const creatingUser = async (req: Request, res: Response) => {
 
     const user = await userService.createUserIntoDB(payload);
 
-    res.status(HttpStatus.CREATED).json({
-        success : true,
-        statusCode : HttpStatus.CREATED,
-        message: "User Registratation SAuccessfull",
-        data : {
-            user
-        }
-
-    })
+    sendResponse(res, HttpStatus.CREATED, true, "User Registratation Successfull", user)
 
     }catch(err){
-        console.log(err);
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-            success : false,
-            statusCode : HttpStatus.INTERNAL_SERVER_ERROR,
-            message : "Failed to register user",
-            error : (err as Error).message
-        })
+
+        // console.error(err);
+        const errMessage = err instanceof Error ? err.message : "Something went Wrong";
+
+        return sendResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, false, errMessage);
     }
 }
 
