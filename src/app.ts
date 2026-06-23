@@ -24,6 +24,6 @@ app.get('/', async (req: Request, res: Response) => {
 
 
 //? creating the apis
-app.use('/api', userRouter)
+app.use('/api/user', userRouter)
 
 export default app;
