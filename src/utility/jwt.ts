@@ -13,11 +13,19 @@ const verifyToken = (token: string, secret: string) => {
     try {
 
         const verifyToken = jwt.verify(token, secret);
-        return verifyToken;
+        return {
+            success : true,
+            data : verifyToken
+        };
 
     } catch (err) {
 
-        throw new Error("Invalid Token");
+       const errorMessage = err instanceof Error ? err.message : "Something went wrong";
+
+       return {
+        success : false,
+        message : errorMessage
+       }
 
     }
 }
