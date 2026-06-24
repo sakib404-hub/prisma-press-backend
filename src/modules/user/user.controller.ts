@@ -57,6 +57,25 @@ const getMyProfile = catchAsync(async(req : Request, res : Response, next : Next
 })
 
 
+//? update my profile information
+const updateMyProfile = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
+
+    const userId = req.user?.id as string;
+
+    const payLoad = req.body;
+
+    const updatedUserProfile = await userService.updateMYProfileInDB(userId, payLoad);
+
+    return sendResponse2(res, {
+        success : true,
+        statusCode : HttpStatus.OK,
+        message : "User Updation Successfull",
+        data : updatedUserProfile
+    })
+
+})
+
+
 //? getting all the users
 const getAllUsers = async(req : Request, res : Response)=>{
     try{
@@ -78,7 +97,8 @@ const userController = {
     creatingUser,
     registerUser,
     getAllUsers,
-    getMyProfile
+    getMyProfile,
+    updateMyProfile
 }
 
 export default userController;
