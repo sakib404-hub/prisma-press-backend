@@ -34,7 +34,7 @@ const longinUser = async (payLoad: AuthPayLoad) => {
     //     } as SignOptions
     // );
 
-    const accessToken  = jwtutils.createToken(jwtPayLoad, config.jwt_secret, config.jwt_access_token_expiration as SignOptions)
+    const accessToken = jwtutils.createToken(jwtPayLoad, config.jwt_secret, config.jwt_access_token_expiration as SignOptions)
 
     //? generating the refresh token
     // const refreshToken = jwt.sign(jwtPayLoad, config.jwt_refresh_secret,
@@ -42,7 +42,7 @@ const longinUser = async (payLoad: AuthPayLoad) => {
     //         expiresIn: config.jwt_refresh_token_expiration
     //     } as SignOptions
     // )
-    
+
     const refreshToken = jwtutils.createToken(jwtPayLoad, config.jwt_refresh_secret, config.jwt_refresh_token_expiration as SignOptions)
 
     return {

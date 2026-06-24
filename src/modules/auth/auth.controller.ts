@@ -9,17 +9,38 @@ const loginUser = catchAsync(async(req : Request, res : Response, next : NextFun
 
     const payLoad : AuthPayLoad = req.body;
 
-    const loginResult = await authServices.longinUser(payLoad);
+    const {accessToken, refreshToken} = await authServices.longinUser(payLoad);
+
+    //? setting up the cookie for the access Token
+    res.cookie("accessToken", accessToken, {
+        httpOnly : true,
+        secure : false,
+        sameSite : "none",
+        maxAge : 1000 * 60 * 60 * 24 //? 24 hours or one day
+    })
+
+
+    //? setting up the cookie for the refreshToken
+     res.cookie("refreshToken", refreshToken, {
+        httpOnly : true,
+        secure : false,
+        sameSite : "none",
+        maxAge : 1000 * 60 * 60 * 24 * 7 //? 7 days or 168 hours
+    })
+
+
 
     sendResponse2(res, {
         success : true,
         statusCode : status.OK,
         message : "User Login Successfully",
-        data : loginResult
+        data : {
+            accessToken,
+            refreshToken
+        }
     })
 
 })
-
 
 //? making an auth controller object and exporting it
 const authController = {
