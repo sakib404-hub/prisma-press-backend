@@ -8,8 +8,23 @@ const createToken = (jwtPayLoad: JwtPayload, secret: string, expiresIn: SignOpti
     return token;
 };
 
+
+const verifyToken = (token: string, secret: string) => {
+    try {
+
+        const verifyToken = jwt.verify(token, secret);
+        return verifyToken;
+
+    } catch (err) {
+
+        throw new Error("Invalid Token");
+
+    }
+}
+
 const jwtutils = {
-    createToken
+    createToken,
+    verifyToken
 }
 
 export default jwtutils;

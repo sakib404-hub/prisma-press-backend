@@ -3,6 +3,11 @@ import HttpStatus from "http-status";
 import userService from "./user.services";
 import sendResponse from "../../utility/sendResponse";
 import catchAsync from "../../utility/catchAsync";
+import jwt from "jsonwebtoken"
+import config from "../../config/dotenv";
+import jwtutils from "../../utility/jwt";
+import { verify } from "node:crypto";
+import sendResponse2 from "../../utility/sendResponse2";
 
 
 
@@ -35,6 +40,30 @@ const registerUser = catchAsync(async(req : Request, res : Response, next : Next
 
 })
 
+//? getting me only valid for the user himself or the admin
+const getMyProfile = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
+
+    const {accessToken} = req.cookies;
+    
+    const verifyToken = jwtutils.verifyToken(accessToken, config.jwt_secret);
+
+    if(typeof verifyToken === "string"){
+        throw new Error(verifyToken);
+    }
+
+    const user = await userService.getMyProfileFromDB(verifyToken.id);
+
+    sendResponse2(res, {
+        success : true,
+        statusCode : HttpStatus.OK,
+        message : "User Information with profile fetched successfully",
+        data : user
+    })
+
+})
+
+
+//? getting all the users
 const getAllUsers = async(req : Request, res : Response)=>{
     try{
 
@@ -54,7 +83,8 @@ const getAllUsers = async(req : Request, res : Response)=>{
 const userController = {
     creatingUser,
     registerUser,
-    getAllUsers
+    getAllUsers,
+    getMyProfile
 }
 
 export default userController;

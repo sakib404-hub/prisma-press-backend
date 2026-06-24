@@ -81,9 +81,31 @@ const getAllUsersFromDB = async()=>{
 }
 
 
+const getMyProfileFromDB = async(id : string)=>{
+    const user = await prisma.user.findUnique({
+        where :{
+            id : id
+        },
+        omit : {
+            password : true
+        },
+        include : {
+            profile : true
+        }
+    })
+
+    if(!user){
+        throw new Error("User Does not exist");
+    }
+
+    return user;
+}
+
+
 const userService = {
     createUserIntoDB,
-    getAllUsersFromDB
+    getAllUsersFromDB,
+    getMyProfileFromDB
 }
 
 export default userService;
