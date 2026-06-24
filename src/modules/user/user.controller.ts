@@ -43,15 +43,9 @@ const registerUser = catchAsync(async(req : Request, res : Response, next : Next
 //? getting me only valid for the user himself or the admin
 const getMyProfile = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
 
-    const {accessToken} = req.cookies;
-    
-    const verifyToken = jwtutils.verifyToken(accessToken, config.jwt_secret);
+    const id = req.user?.id;
 
-    if(typeof verifyToken === "string"){
-        throw new Error(verifyToken);
-    }
-
-    const user = await userService.getMyProfileFromDB(verifyToken.id);
+    const user = await userService.getMyProfileFromDB(id as string);
 
     sendResponse2(res, {
         success : true,
