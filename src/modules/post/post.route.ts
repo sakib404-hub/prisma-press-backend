@@ -14,7 +14,7 @@ router.get('/my-posts', auth(Role.ADMIN, Role.USER), postController.myPost);
 
 router.get('/:postId', postController.incrementViewCount);
 
-router.post('/', auth(Role.USER, Role.ADMIN), postController.createPost);
+router.post('/', auth(Role.USER, Role.ADMIN, Role.AUTHOR), postController.createPost);
 
 router.patch('/:postId', auth(Role.USER, Role.ADMIN), postController.updatePost);
 
