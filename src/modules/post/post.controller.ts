@@ -20,6 +20,15 @@ const getAllPosts = catchAsync(async (req: Request, res: Response, next: NextFun
 //? getting post states this will be done by the admin himself
 const getPostStats = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
+    const result = await postService.getPostStats();
+
+    return sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "Post stats retived successfully!",
+        data : result
+    })
+
 })
 
 //? getting my post this will be for the authenticated user or the admin

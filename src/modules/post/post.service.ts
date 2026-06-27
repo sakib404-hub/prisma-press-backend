@@ -1,4 +1,4 @@
-import { CommentStaus } from "../../../generated/prisma/enums";
+import { CommentStaus, PostStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { ICreatePostPayLoad, IUpdatePostPayLoad } from "./post.interface";
 
@@ -17,6 +17,67 @@ const getAllPosts = async () => {
 };
 
 const getPostStats = async () => {
+
+    const transactionResult = await prisma.$transaction(async (tx) => {
+        const totalPosts = await tx.post.count();
+        const totalPublishedPost = await tx.post.count({
+            where: {
+                status: PostStatus.PUBLISHED
+            }
+        });
+
+        const totalDraftPost = await tx.post.count({
+            where: {
+                status: PostStatus.DRAFT
+            }
+        });
+
+        const totalarchivedPost = await tx.post.count({
+            where: {
+                status: PostStatus.ARCHIVED
+            }
+        });
+
+        const totalComments = await tx.comment.count();
+        const totalApprovedComment = await tx.comment.count({
+            where : {
+                status : CommentStaus.APPROVED
+            }
+        });
+        const totalRejectedComment  = await tx.comment.count({
+            where : {
+                status : CommentStaus.REJECT
+            }
+        });
+
+        //? we can do this but it is not a good approach
+        // const allPosts = await tx.post.findMany();
+
+        // let totalPostViews = 0;
+        // allPosts.forEach((p)=>{
+        //     totalPostViews += p.views;
+        // })
+
+        //? for this we will follow aggregation
+        const totalPostViwes = await tx.post.aggregate({
+            _sum : {
+                views : true
+            }
+        })
+
+        return {
+            totalPosts,
+            totalDraftPost,
+            totalPublishedPost,
+            totalarchivedPost,
+            totalComments, 
+            totalApprovedComment,
+            totalRejectedComment,
+            totalPostViwes
+        }
+    })
+
+    return transactionResult;
 
 };
 
