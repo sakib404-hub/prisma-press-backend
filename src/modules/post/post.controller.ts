@@ -94,7 +94,20 @@ const updatePost = catchAsync(async (req: Request, res: Response, next: NextFunc
 //? deleting a particular post
 
 const deletePost = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const postId = req.params.postId;
+    const authorId = req.user?.id;
+    const isAdmin = req.user?.role === Role.ADMIN ? true : false;
 
+
+        const result = await postService.deletePost(postId as string, authorId as string, isAdmin
+    );
+
+    sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "Post Deleted Successfully!",
+        data : result
+    })
 })
 
 

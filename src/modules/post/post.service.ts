@@ -130,8 +130,35 @@ const updatePost = async (postId : string, payLoad : IUpdatePostPayLoad,
     
 };
 
-const deletePost = async () => {
+const deletePost = async (postId : string, authorId : string, isAdmin : boolean) => {
+    const post = await prisma.post.findUnique({
+        where : {
+            id : postId
+        },
+        include : {
+            author : {
+                omit : {
+                    password : true
+                }
+            }
+        }
+    });
 
+    if(!post){
+        throw new Error("Post Does not exist");
+    }
+
+    if(!isAdmin && post?.authorId !== authorId){
+        throw new Error("You are not the Admin of this post");
+    }
+
+    const result = await prisma.post.delete({
+        where : {
+            id : postId
+        }
+    })
+
+    return result;
 };
 
 export const postService = {
