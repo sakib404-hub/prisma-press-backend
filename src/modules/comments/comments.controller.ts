@@ -59,7 +59,17 @@ const createComment = catchAsync(
 // Update own comment
 const updateComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+      const payLoad = req.body;
+      const commentId = req.params.commentId;
 
+      const result = await commentService.updateComment(commentId as string, payLoad);
+
+      return sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "Comment updated successfully",
+        data : result
+      })
   }
 );
 

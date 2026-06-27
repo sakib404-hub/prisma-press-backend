@@ -36,8 +36,17 @@ const createComment = async (payLoad : ICommentPayLoad) => {
   return creatingComment;
 };
 
-const updateComment = async () => {
+const updateComment = async (commentId : string, payLoad : ICommentPayLoad) => {  
   
+  const updatdComment = await prisma.comment.update({
+    where : {
+      id : commentId
+    },
+    data : payLoad
+  })
+
+  return updatdComment;
+
 };
 
 const deleteComment = async () => {
