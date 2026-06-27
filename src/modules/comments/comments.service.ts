@@ -14,8 +14,16 @@ const getCommentsByAuthor = async (authordId: string) => {
   return allCommentsByAuthor;
 };
 
-const getSingleComment = async () => {
-  
+const getSingleComment = async (commentId : string) => {
+
+  const comment = await prisma.comment.findUniqueOrThrow({
+    where : {
+      id : commentId
+    }
+  })
+
+  return comment;
+
 };
 
 const createComment = async (payLoad : ICommentPayLoad) => {
@@ -29,7 +37,7 @@ const createComment = async (payLoad : ICommentPayLoad) => {
 };
 
 const updateComment = async () => {
-
+  
 };
 
 const deleteComment = async () => {

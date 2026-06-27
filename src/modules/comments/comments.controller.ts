@@ -27,6 +27,17 @@ const getCommentsByAuthor = catchAsync(
 const getSingleComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
 
+    const commentId = req.params.commentId;
+
+    const comment = await commentService.getSingleComment(commentId as string);
+
+    return sendResponse2(res, {
+      success : true,
+      statusCode : status.OK,
+      message : "Specific comment found successfully!",
+      data : comment
+    })
+
   }
 );
 
