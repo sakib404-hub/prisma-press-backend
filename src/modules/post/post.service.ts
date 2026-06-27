@@ -2,7 +2,17 @@ import { prisma } from "../../lib/prisma";
 import { ICreatePostPayLoad } from "./post.interface";
 
 const getAllPosts = async () => {
-
+    const result = await prisma.post.findMany({
+        include : {
+            author : {
+                omit : {
+                    password : true
+                }
+            },
+            comments : true
+        }
+    });
+    return result;
 };
 
 const getPostStats = async () => {

@@ -6,7 +6,14 @@ import status from "http-status";
 
 //? getting all the posts
 const getAllPosts = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
+    const allPosts = await postService.getAllPosts();
 
+    return sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "All post fetched successfully",
+        data : allPosts
+    })
 })
 
 //? getting post states this will be done by the admin himself
