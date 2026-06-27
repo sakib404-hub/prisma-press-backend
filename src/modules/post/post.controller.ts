@@ -22,8 +22,22 @@ const getPostStats = catchAsync(async(req : Request, res : Response, next : Next
 })
 
 //? getting my post this will be for the authenticated user or the admin
+//? this is the get post by Id
 const myPost = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
+    const postId = req.params.postId;
 
+    if(!postId){
+        throw new Error("Post id not found!");
+    }
+
+    const result = await postService.incrementViewCount(postId as string);
+
+    return sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "Your post found successfully!",
+        data : result
+    })
 })
 
 //? returns a single post and increments its view counts

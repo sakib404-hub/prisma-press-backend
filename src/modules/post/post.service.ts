@@ -19,12 +19,42 @@ const getPostStats = async () => {
 
 };
 
+//? this is the getPostById
 const myPost = async () => {
-
 };
 
-const incrementViewCount = async () => {
+//? gettingg the post by id and incrementing coutn view
+const incrementViewCount = async (postId : string) => {
+        const post = await prisma.post.findUnique({
+        where : {
+            id : postId
+        },
+        include : {
+            comments : true,
+            author : {
+                omit : {
+                    password : true
+                }
+            }
+        }
+    })
 
+    if(!post){
+        throw new Error("Post doesn't exist");
+    }
+
+    const updatedPost = await prisma.post.update({
+        where : {
+            id : postId
+        },
+        data : {
+            views : {
+                increment : 1
+            }
+        }
+    })
+
+    return updatedPost;
 };
 
 const createPost = async (payLoad : ICreatePostPayLoad, userId : string) => {
