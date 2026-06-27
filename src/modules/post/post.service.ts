@@ -20,7 +20,25 @@ const getPostStats = async () => {
 };
 
 //? this is the getPostById
-const myPost = async () => {
+const myPost = async (authorId : string) => {
+    const posts = await prisma.post.findMany({
+        where : {
+            authorId : authorId
+        },
+        orderBy : {
+            createdAt : "asc"
+        },
+        include : {
+            comments : true,
+            author : {
+                omit : {
+                    password : true
+                }
+            }
+        }
+    })
+
+    return posts;
 };
 
 //? gettingg the post by id and incrementing coutn view
