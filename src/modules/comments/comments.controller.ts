@@ -3,6 +3,7 @@ import catchAsync from "../../utility/catchAsync";
 import { commentService } from "./comments.service";
 import sendResponse2 from "../../utility/sendResponse2";
 import status from "http-status";
+import userService from "../user/user.services";
 
 // Get all comments by a specific author
 const getCommentsByAuthor = catchAsync(
@@ -32,7 +33,15 @@ const getSingleComment = catchAsync(
 // Create a comment
 const createComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    const payLoad = req.body;
+    const result = await commentService.createComment(payLoad);
 
+    return sendResponse2(res, {
+      success : true,
+      statusCode : status.CREATED,
+      message : "Comment created Successfully",
+      data : result
+    })
   }
 );
 

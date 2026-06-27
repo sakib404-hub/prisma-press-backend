@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { ICommentPayLoad } from "./comments.interface";
 
 const getCommentsByAuthor = async (authordId: string) => {
   const allCommentsByAuthor = await prisma.$transaction(async (tx) => {
@@ -14,11 +15,17 @@ const getCommentsByAuthor = async (authordId: string) => {
 };
 
 const getSingleComment = async () => {
-
+  
 };
 
-const createComment = async () => {
-
+const createComment = async (payLoad : ICommentPayLoad) => {
+  const creatingComment = await prisma.$transaction(async(tx)=>{
+    const comment = await tx.comment.create({
+        data : payLoad
+    })
+    return comment;
+  })
+  return creatingComment;
 };
 
 const updateComment = async () => {

@@ -8,6 +8,7 @@ router.get("/author/:authorId", commentController.getCommentsByAuthor);
 
 router.get("/:commentId", commentController.getSingleComment);
 
+//? posting a comment on a post
 router.post("/", commentController.createComment);
 
 router.patch("/:commentId", commentController.updateComment);
