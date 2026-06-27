@@ -3,6 +3,7 @@ import { commentController } from "./comments.controller";
 
 const router = Router();
 
+//? getting all the comments written by the user
 router.get("/author/:authorId", commentController.getCommentsByAuthor);
 
 router.get("/:commentId", commentController.getSingleComment);
