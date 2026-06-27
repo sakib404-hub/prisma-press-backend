@@ -34,6 +34,12 @@ const myPost = async (authorId : string) => {
                 omit : {
                     password : true
                 }
+            },
+            //? counting the comments in the posts
+            _count : {
+                select  : {
+                    comments : true
+                }
             }
         }
     })
