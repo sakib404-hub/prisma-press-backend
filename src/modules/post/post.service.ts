@@ -1,15 +1,16 @@
+import { CommentStaus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { ICreatePostPayLoad, IUpdatePostPayLoad } from "./post.interface";
 
 const getAllPosts = async () => {
     const result = await prisma.post.findMany({
-        include : {
-            author : {
-                omit : {
-                    password : true
+        include: {
+            author: {
+                omit: {
+                    password: true
                 }
             },
-            comments : true
+            comments: true
         }
     });
     return result;
@@ -20,25 +21,25 @@ const getPostStats = async () => {
 };
 
 //? this is the getPostById
-const myPost = async (authorId : string) => {
+const myPost = async (authorId: string) => {
     const posts = await prisma.post.findMany({
-        where : {
-            authorId : authorId
+        where: {
+            authorId: authorId
         },
-        orderBy : {
-            createdAt : "asc"
+        orderBy: {
+            createdAt: "asc"
         },
-        include : {
-            comments : true,
-            author : {
-                omit : {
-                    password : true
+        include: {
+            comments: true,
+            author: {
+                omit: {
+                    password: true
                 }
             },
             //? counting the comments in the posts
-            _count : {
-                select  : {
-                    comments : true
+            _count: {
+                select: {
+                    comments: true
                 }
             }
         }
@@ -48,45 +49,55 @@ const myPost = async (authorId : string) => {
 };
 
 //? gettingg the post by id and incrementing coutn view
-const incrementViewCount = async (postId : string) => {
-        const post = await prisma.post.findUnique({
-        where : {
-            id : postId
+const incrementViewCount = async (postId: string) => {
+
+    await prisma.post.update({
+        where: {
+            id: postId
         },
-        include : {
-            comments : true,
-            author : {
-                omit : {
-                    password : true
+        data: {
+            views: {
+                increment: 1
+            }
+        }
+    })
+
+
+    const post = await prisma.post.findUnique({
+        where: {
+            id: postId
+        },
+        include: {
+            comments: {
+                where: {
+                    status: CommentStaus.APPROVED
+                },
+                orderBy: {
+                    createdAt: "desc"
+                }
+            },
+            author: {
+                omit: {
+                    password: true
+                }
+            },
+            _count: {
+                select: {
+                    comments: true
                 }
             }
         }
     })
 
-    if(!post){
-        throw new Error("Post doesn't exist");
-    }
-
-    const updatedPost = await prisma.post.update({
-        where : {
-            id : postId
-        },
-        data : {
-            views : {
-                increment : 1
-            }
-        }
-    })
-
-    return updatedPost;
+    return post;
 };
 
-const createPost = async (payLoad : ICreatePostPayLoad, userId : string) => {
+const createPost = async (payLoad: ICreatePostPayLoad, userId: string) => {
 
     const result = await prisma.post.create({
-        data : {
+        data: {
             ...payLoad,
-            authorId : userId
+            authorId: userId
         }
     })
 
@@ -95,78 +106,80 @@ const createPost = async (payLoad : ICreatePostPayLoad, userId : string) => {
 };
 
 
-const updatePost = async (postId : string, payLoad : IUpdatePostPayLoad,
-    authorId : string, isAdmin : boolean
+const updatePost = async (postId: string, payLoad: IUpdatePostPayLoad,
+    authorId: string, isAdmin: boolean
 ) => {
     const post = await prisma.post.findUnique({
-        where : {
-            id : postId
+        where: {
+            id: postId
         }
     })
 
-    if(!post){
+    if (!post) {
         throw new Error("Post doesn't exist!");
     }
 
-    if(!isAdmin && post.authorId !== authorId){
+    if (!isAdmin && post.authorId !== authorId) {
         throw new Error("You don't have the permission to update this post, you are not the owner of this post");
     }
 
     const updatedPost = await prisma.post.update({
-        where : {
-            id : postId
+        where: {
+            id: postId
         },
-        data : payLoad,
-        include : {
-            author : {
-                omit : {
-                    password : true
+        data: payLoad,
+        include: {
+            author: {
+                omit: {
+                    password: true
                 }
             }
         }
     })
 
     return updatedPost;
-    
+
 };
 
-const deletePost = async (postId : string, authorId : string, isAdmin : boolean) => {
+const deletePost = async (postId: string, authorId: string, isAdmin: boolean) => {
+
     const post = await prisma.post.findUnique({
-        where : {
-            id : postId
+        where: {
+            id: postId
         },
-        include : {
-            author : {
-                omit : {
-                    password : true
+        include: {
+            author: {
+                omit: {
+                    password: true
                 }
             }
         }
     });
 
-    if(!post){
+    if (!post) {
         throw new Error("Post Does not exist");
     }
 
-    if(!isAdmin && post?.authorId !== authorId){
-        throw new Error("You are not the Admin of this post");
+    if (!isAdmin && post?.authorId !== authorId) {
+        throw new Error("Forbidden,You don't have the permission to delete this post!");
     }
 
-    const result = await prisma.post.delete({
-        where : {
-            id : postId
+    await prisma.post.delete({
+        where: {
+            id: postId
         }
     })
 
-    return result;
+    return null;
+
 };
 
 export const postService = {
-  getAllPosts,
-  getPostStats,
-  myPost,
-  incrementViewCount,
-  createPost,
-  updatePost,
-  deletePost,
+    getAllPosts,
+    getPostStats,
+    myPost,
+    incrementViewCount,
+    createPost,
+    updatePost,
+    deletePost,
 };

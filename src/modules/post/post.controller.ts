@@ -79,15 +79,14 @@ const updatePost = catchAsync(async (req: Request, res: Response, next: NextFunc
     const role = req.user?.role === Role.ADMIN ? true : false;
     const postId = req.params.postId;
 
-    const result = await postService.updatePost(postId as string,
+    await postService.updatePost(postId as string,
         payLoad, userId as string, role
     );
 
     sendResponse2(res, {
         success : true,
         statusCode : status.OK,
-        message : "Post Updated Successfully!",
-        data : result
+        message : "Post Deleted Successfully!",
     })
 })
 
