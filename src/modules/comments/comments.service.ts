@@ -49,8 +49,13 @@ const updateComment = async (commentId : string, payLoad : ICommentPayLoad) => {
 
 };
 
-const deleteComment = async () => {
-
+const deleteComment = async (commentId : string) => {
+  await prisma.comment.delete({
+    where : {
+      id : commentId
+    }
+  })
+  return null;
 };
 
 const moderateComment = async () => {

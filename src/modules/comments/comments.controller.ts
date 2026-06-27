@@ -4,6 +4,7 @@ import { commentService } from "./comments.service";
 import sendResponse2 from "../../utility/sendResponse2";
 import status from "http-status";
 import userService from "../user/user.services";
+import { statSync } from "node:fs";
 
 // Get all comments by a specific author
 const getCommentsByAuthor = catchAsync(
@@ -76,7 +77,15 @@ const updateComment = catchAsync(
 // Delete own comment
 const deleteComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+      const commentId = req.params.commentId;;
 
+      await commentService.deleteComment(commentId as string);
+
+      return sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "Comment deleted successfully"
+      })
   }
 );
 
