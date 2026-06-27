@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import catchAsync from "../../utility/catchAsync";
+import { postService } from "./post.service";
+import sendResponse2 from "../../utility/sendResponse2";
+import status from "http-status";
 
 //? getting all the posts
 const getAllPosts = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
@@ -23,7 +26,17 @@ const incrementViewCount = catchAsync(async(req : Request, res : Response, next 
 
 //? creating a post
 const createPost = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
+    const payLoad = req.body;
+    const id = req.user?.id;
 
+    const result = await postService.createPost(payLoad, id as string);
+
+    return sendResponse2(res, {
+        success : true,
+        statusCode : status.CREATED,
+        message : "Post Created Successfully",
+        data : result
+    });
 })
 
 //? updating a particular post
