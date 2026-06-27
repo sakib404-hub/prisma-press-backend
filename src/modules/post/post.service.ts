@@ -92,6 +92,54 @@ const incrementViewCount = async (postId: string) => {
     return post;
 };
 
+
+const incrementViewCount2 = async (postId: string) => {
+
+    const transactionResult = await prisma.$transaction(async (tx) => {
+        await tx.post.update({
+            where: {
+                id: postId
+            },
+            data: {
+                views: {
+                    increment: 1
+                }
+            }
+        });
+
+        const post = await tx.post.findUnique({
+            where: {
+                id: postId
+            },
+            include: {
+                comments: {
+                    where: {
+                        status: CommentStaus.APPROVED
+                    },
+                    orderBy: {
+                        createdAt: "desc"
+                    }
+                },
+                author: {
+                    omit: {
+                        password: true
+                    }
+                },
+                _count: {
+                    select: {
+                        comments: true
+                    }
+                }
+            }
+        })
+
+        return post;
+
+    });
+
+    return transactionResult;
+}
+
 const createPost = async (payLoad: ICreatePostPayLoad, userId: string) => {
 
     const result = await prisma.post.create({
@@ -182,4 +230,5 @@ export const postService = {
     createPost,
     updatePost,
     deletePost,
+    incrementViewCount2
 };

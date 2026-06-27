@@ -46,7 +46,7 @@ const incrementViewCount = catchAsync(async (req: Request, res: Response, next: 
         throw new Error("Post id not found!");
     }
 
-    const result = await postService.incrementViewCount(postId as string);
+    const result = await postService.incrementViewCount2(postId as string);
 
     return sendResponse2(res, {
         success: true,
