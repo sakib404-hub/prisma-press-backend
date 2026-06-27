@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { ICreatePostPayLoad } from "./post.interface";
+import { ICreatePostPayLoad, IUpdatePostPayLoad } from "./post.interface";
 
 const getAllPosts = async () => {
     const result = await prisma.post.findMany({
@@ -94,8 +94,40 @@ const createPost = async (payLoad : ICreatePostPayLoad, userId : string) => {
 
 };
 
-const updatePost = async () => {
 
+const updatePost = async (postId : string, payLoad : IUpdatePostPayLoad,
+    authorId : string, isAdmin : boolean
+) => {
+    const post = await prisma.post.findUnique({
+        where : {
+            id : postId
+        }
+    })
+
+    if(!post){
+        throw new Error("Post doesn't exist!");
+    }
+
+    if(!isAdmin && post.authorId !== authorId){
+        throw new Error("You don't have the permission to update this post, you are not the owner of this post");
+    }
+
+    const updatedPost = await prisma.post.update({
+        where : {
+            id : postId
+        },
+        data : payLoad,
+        include : {
+            author : {
+                omit : {
+                    password : true
+                }
+            }
+        }
+    })
+
+    return updatedPost;
+    
 };
 
 const deletePost = async () => {

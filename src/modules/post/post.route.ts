@@ -20,6 +20,7 @@ router.get('/:postId', postController.incrementViewCount);
 
 router.post('/', auth(Role.USER, Role.ADMIN, Role.AUTHOR), postController.createPost);
 
+//? updating post information admin or user
 router.patch('/:postId', auth(Role.USER, Role.ADMIN), postController.updatePost);
 
 router.delete('/:postId', auth(Role.USER, Role.ADMIN), postController.deletePost);

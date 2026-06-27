@@ -3,6 +3,7 @@ import catchAsync from "../../utility/catchAsync";
 import { postService } from "./post.service";
 import sendResponse2 from "../../utility/sendResponse2";
 import status from "http-status";
+import { Role } from "../../../generated/prisma/enums";
 
 //? getting all the posts
 const getAllPosts = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -72,7 +73,22 @@ const createPost = catchAsync(async (req: Request, res: Response, next: NextFunc
 
 //? updating a particular post
 const updatePost = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+   
+    const userId = req.user?.id;
+    const payLoad = req.body;
+    const role = req.user?.role === Role.ADMIN ? true : false;
+    const postId = req.params.postId;
 
+    const result = await postService.updatePost(postId as string,
+        payLoad, userId as string, role
+    );
+
+    sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "Post Updated Successfully!",
+        data : result
+    })
 })
 
 //? deleting a particular post

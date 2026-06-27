@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import status from "http-status"
-import sendResponse from "./sendResponse";
+import sendResponse2 from "./sendResponse2";
 
 const catchAsync = (fn : RequestHandler)=>{
     return async(req : Request, res : Response, next : NextFunction)=>{
@@ -10,7 +10,11 @@ const catchAsync = (fn : RequestHandler)=>{
 
             const errMessage = error instanceof Error ? error.message : "Something went Wrong!";
 
-            return sendResponse(res, status.INTERNAL_SERVER_ERROR, false, errMessage);
+            return sendResponse2(res, {
+                success : false,
+                statusCode : status.INTERNAL_SERVER_ERROR,
+                message : errMessage
+            })
         }
     }
 }
