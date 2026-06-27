@@ -5,6 +5,8 @@ import config from "./config/dotenv";
 
 import { userRouter } from "./modules/user/user.route";
 import { authRouter } from "./modules/auth/auth.routes";
+import { postRouter } from "./modules/post/post.route";
+import { commentRouter } from "./modules/comments/comments.route";
 
 const app: Application = express();
 
@@ -27,5 +29,7 @@ app.get('/', async (req: Request, res: Response) => {
 //? creating the apis
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter);
+app.use('/api/comments', commentRouter);
 
 export default app;
