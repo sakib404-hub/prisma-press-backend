@@ -1,10 +1,10 @@
 model Profile {
-  id String @id @default(uuid())
+  id           String  @id @default(uuid())
   profilePhoto String?
-  bio String?
+  bio          String?
 
   //? creating a one to one relationship between profile and user
-  user User @relation(fields : [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
   userId String @unique
 
   //? updating date and time of the profile
