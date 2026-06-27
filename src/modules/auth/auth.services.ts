@@ -3,7 +3,7 @@ import { prisma } from "../../lib/prisma";
 import jwtutils from "../../utility/jwt";
 import { AuthPayLoad } from "./auth.interface";
 import bcrypt from "bcrypt"
-import jwt, { SignOptions } from "jsonwebtoken"
+import { JwtPayload, SignOptions } from "jsonwebtoken"
 
 
 const longinUser = async (payLoad: AuthPayLoad) => {
@@ -51,8 +51,45 @@ const longinUser = async (payLoad: AuthPayLoad) => {
     };
 }
 
+const refreshToken = async(refreshToken : string)=>{
+
+    const varifiedRefreshToken = jwtutils.verifyToken(refreshToken, config.jwt_refresh_secret);
+
+    if(!varifiedRefreshToken.success){
+        throw new Error(varifiedRefreshToken.message)
+    }
+
+    const {id} = varifiedRefreshToken.data as JwtPayload;
+
+    const user = await prisma.user.findUnique({
+        where : {
+            id
+        }
+    })
+
+    if(!user){
+        throw new Error("User Does not Exist!");
+    }
+
+    if(user.activeStatus === 'BlOCKED'){
+        throw new Error("User is blocked, kindly contact support");
+    }
+
+    const jwtPayLoad = {
+        id : user.id,
+        name : user.name,
+        email : user.email,
+        role : user.role
+    }
+
+    const accessToken = jwtutils.createToken(jwtPayLoad, config.jwt_secret, config.jwt_access_token_expiration as SignOptions);
+
+    return accessToken;
+}
+
 const authServices = {
-    longinUser
+    longinUser,
+    refreshToken
 }
 
 export default authServices;
