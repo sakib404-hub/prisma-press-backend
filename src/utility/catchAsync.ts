@@ -1,6 +1,4 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import status from "http-status"
-import sendResponse2 from "./sendResponse2";
 
 const catchAsync = (fn : RequestHandler)=>{
     return async(req : Request, res : Response, next : NextFunction)=>{
