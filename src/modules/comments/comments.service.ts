@@ -28,6 +28,21 @@ const getSingleComment = async (commentId : string) => {
 
 const createComment = async (payLoad : ICommentPayLoad) => {
   const creatingComment = await prisma.$transaction(async(tx)=>{
+    
+    //? checking if the post exist or not
+    const post = await tx.post.findUnique({
+      where : {
+        id : payLoad.postId
+      },
+      select : {
+        id : true
+      }
+    });
+
+    if(!post){
+      throw new Error("Post does not exist!");
+    }
+
     const comment = await tx.comment.create({
         data : payLoad
     })
