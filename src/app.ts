@@ -1,6 +1,6 @@
 import cookieParser from "cookie-parser";
 import cors from "cors"
-import express, { Application, Request, Response } from "express";
+import express, { Application, ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import config from "./config/dotenv";
 import { userRouter } from "./modules/user/user.route";
 import { authRouter } from "./modules/auth/auth.routes";
@@ -8,6 +8,8 @@ import { postRouter } from "./modules/post/post.route";
 import { commentRouter } from "./modules/comments/comments.route";
 import status from "http-status";
 import { notFound } from "./Middlewares/notfound";
+import sendResponse2 from "./utility/sendResponse2";
+import { globalErrorHandler } from "./Middlewares/globalErrorHandler";
 
 const app: Application = express();
 
@@ -34,6 +36,7 @@ app.use('/api/posts', postRouter);
 app.use('/api/comments', commentRouter);
 
 
-app.use(notFound)
+app.use(notFound);
+app.use(globalErrorHandler);
 
 export default app;

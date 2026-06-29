@@ -8,13 +8,7 @@ const catchAsync = (fn : RequestHandler)=>{
             await fn(req, res, next);
         }catch(error){
 
-            const errMessage = error instanceof Error ? error.message : "Something went Wrong!";
-
-            return sendResponse2(res, {
-                success : false,
-                statusCode : status.INTERNAL_SERVER_ERROR,
-                message : errMessage
-            })
+          next(error);
         }
     }
 }
