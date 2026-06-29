@@ -4,6 +4,26 @@ import { ICreatePostPayLoad, IUpdatePostPayLoad } from "./post.interface";
 
 const getAllPosts = async () => {
     const result = await prisma.post.findMany({
+        where: {
+            AND: [
+                {
+                    status: PostStatus.PUBLISHED
+                },
+                {
+                    title: "Building Secure APIs with JWT"
+                },
+                {
+                    tags: {
+                        equals: [
+                            "JWT",
+                            "Authentication",
+                            "Security"
+                        ]
+                    }
+                }
+            ]
+
+        },
         include: {
             author: {
                 omit: {
@@ -19,7 +39,7 @@ const getAllPosts = async () => {
 const getPostStats = async () => {
 
     const transactionResult = await prisma.$transaction(async (tx) => {
-    
+
         const [
             totalPosts,
             publishedPosts,
@@ -70,7 +90,7 @@ const getPostStats = async () => {
 
         ]);
 
-         return {
+        return {
             totalPosts,
             publishedPosts,
             draftPosts,
@@ -79,7 +99,7 @@ const getPostStats = async () => {
             approvedComments,
             rejectedComments,
             totalViews,
-         }
+        }
     })
 
     return transactionResult;
