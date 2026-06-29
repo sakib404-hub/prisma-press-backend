@@ -4,25 +4,60 @@ import { ICreatePostPayLoad, IUpdatePostPayLoad } from "./post.interface";
 
 const getAllPosts = async () => {
     const result = await prisma.post.findMany({
-        where: {
-            AND: [
+        //? filtering with the and operators
+        // where: {
+        //     AND: [
+        //         {
+        //             status: PostStatus.PUBLISHED
+        //         },
+        //         {
+        //             title: "Building Secure APIs with JWT"
+        //         },
+        //         {
+        //             tags: {
+        //                 equals: [
+        //                     "JWT",
+        //                     "Authentication",
+        //                     "Security"
+        //                 ]
+        //             }
+        //         }
+        //     ]
+        // },
+
+
+        //? searching or partital matching
+
+        // where : {
+        //     //? this becomes and means that both condition had to be mathced for finding a post
+        //     title : {
+        //         contains : "with",
+        //         mode : "insensitive"
+        //     },
+        //     content : {
+        //         contains : "tokens",
+        //         mode : "insensitive"
+        //     }
+        // },
+
+
+        //? for avoiding such thing we can do this
+        //? this becomes or means that if one can matched you wil fetch the data
+        where : {
+            OR : [
                 {
-                    status: PostStatus.PUBLISHED
+                    title : {
+                        contains : "secure",
+                        mode : "insensitive"
+                    },
                 },
                 {
-                    title: "Building Secure APIs with JWT"
-                },
-                {
-                    tags: {
-                        equals: [
-                            "JWT",
-                            "Authentication",
-                            "Security"
-                        ]
+                    content : {
+                        contains : "prisma",
+                        mode : "insensitive"
                     }
                 }
             ]
-
         },
         include: {
             author: {
