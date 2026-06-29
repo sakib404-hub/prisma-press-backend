@@ -1,87 +1,19 @@
 import { CommentStaus, PostStatus } from "../../../generated/prisma/enums";
+import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
-import { ICreatePostPayLoad, IUpdatePostPayLoad } from "./post.interface";
+import { ICreatePostPayLoad, IPostQuery, IUpdatePostPayLoad } from "./post.interface";
 
-const getAllPosts = async () => {
+
+const getAllPosts = async (query : IPostQuery) => {
     const result = await prisma.post.findMany({
-        //? filtering with the and operators
-        // where: {
-        //     AND: [
-        //         {
-        //             status: PostStatus.PUBLISHED
-        //         },
-        //         {
-        //             title: "Building Secure APIs with JWT"
-        //         },
-        //         {
-        //             tags: {
-        //                 equals: [
-        //                     "JWT",
-        //                     "Authentication",
-        //                     "Security"
-        //                 ]
-        //             }
-        //         }
-        //     ]
-        // },
-
-
-        //? searching or partital matching
-
-        // where : {
-        //     //? this becomes and means that both condition had to be mathced for finding a post
-        //     title : {
-        //         contains : "with",
-        //         mode : "insensitive"
-        //     },
-        //     content : {
-        //         contains : "tokens",
-        //         mode : "insensitive"
-        //     }
-        // },
-
-
-        //? for avoiding such thing we can do this
-        //? this becomes or means that if one can matched you wil fetch the data
-        // where : {
-        //     OR : [
-        //         {
-        //             title : {
-        //                 contains : "secure",
-        //                 mode : "insensitive"
-        //             },
-        //         },
-        //         {
-        //             content : {
-        //                 contains : "prisma",
-        //                 mode : "insensitive"
-        //             }
-        //         }
-        //     ]
-        // },
-
-        take : 1, //? take in express is known as the limit how many data we will show
-
-        skip : 1,
-        //? what number of page i want to skip 
-        //? page  : (skip + 1) this page i am showing to everyone
-
-        orderBy : {
-            createdAt : "desc",
-            title : "asc"
+        include: {
+            author: {
+                omit: {
+                    password: true
+                }
+            },
+            comments: true
         }
-
-
-
-
-        // include: {
-        //     author: {
-        //         omit: {
-        //             password: true
-        //         }
-        //     },
-        //     comments: true
-        // }
     });
     return result;
 };
