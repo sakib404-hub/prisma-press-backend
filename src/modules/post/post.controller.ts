@@ -7,8 +7,9 @@ import { Role } from "../../../generated/prisma/enums";
 
 //? getting all the posts
 const getAllPosts = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
     const query = req.query;
-    
+
     const allPosts = await postService.getAllPosts(query);
 
     return sendResponse2(res, {
