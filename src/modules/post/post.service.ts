@@ -43,30 +43,45 @@ const getAllPosts = async () => {
 
         //? for avoiding such thing we can do this
         //? this becomes or means that if one can matched you wil fetch the data
-        where : {
-            OR : [
-                {
-                    title : {
-                        contains : "secure",
-                        mode : "insensitive"
-                    },
-                },
-                {
-                    content : {
-                        contains : "prisma",
-                        mode : "insensitive"
-                    }
-                }
-            ]
-        },
-        include: {
-            author: {
-                omit: {
-                    password: true
-                }
-            },
-            comments: true
+        // where : {
+        //     OR : [
+        //         {
+        //             title : {
+        //                 contains : "secure",
+        //                 mode : "insensitive"
+        //             },
+        //         },
+        //         {
+        //             content : {
+        //                 contains : "prisma",
+        //                 mode : "insensitive"
+        //             }
+        //         }
+        //     ]
+        // },
+
+        take : 1, //? take in express is known as the limit how many data we will show
+
+        skip : 1,
+        //? what number of page i want to skip 
+        //? page  : (skip + 1) this page i am showing to everyone
+
+        orderBy : {
+            createdAt : "desc",
+            title : "asc"
         }
+
+
+
+
+        // include: {
+        //     author: {
+        //         omit: {
+        //             password: true
+        //         }
+        //     },
+        //     comments: true
+        // }
     });
     return result;
 };
