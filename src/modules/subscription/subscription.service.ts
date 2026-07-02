@@ -3,6 +3,7 @@ import config from "../../config/dotenv";
 import { prisma } from "../../lib/prisma";
 import stripe from "../../lib/strip";
 import { handleChangeSubscriptionChange, handleCheckOutSessionComplete } from "./subscription.utils";
+import { Role, SubscriptionStatus } from "../../../generated/prisma/enums";
 
 const createCheckhOutSession = async (userId: string) => {
 
@@ -95,7 +96,25 @@ const weebHookHandler = async (payLoad: Buffer, signature: string) => {
     }
 }
 
+const getSubscriptionStatus = async(userId : string)=>{
+    const isSubscriptionExists = await prisma.subscription.findUnique({
+        where : {
+            userId
+        }
+    });
+
+    const isActive = isSubscriptionExists?.status === SubscriptionStatus.ACTIVE && isSubscriptionExists.current_period_end && new Date(isSubscriptionExists.current_period_end) > new Date();
+
+    return {
+        status : isSubscriptionExists?.status,
+        isSubscribed : isActive,
+        currentPeriodEnd : isSubscriptionExists?.current_period_end
+
+    }
+}
+
 export const subsbscriptionService = {
     createCheckhOutSession,
-    weebHookHandler
+    weebHookHandler,
+    getSubscriptionStatus
 }
