@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import config from "../../config/dotenv";
 import { prisma } from "../../lib/prisma";
 import stripe from "../../lib/strip";
-import { SubscriptionStatus } from "../../../generated/prisma/enums";
+import { handleChangeSubscriptionChange, handleCheckOutSessionComplete } from "./subscription.utils";
 
 const createCheckhOutSession = async (userId: string) => {
 
@@ -80,11 +80,12 @@ const weebHookHandler = async (payLoad: Buffer, signature: string) => {
             break;
         case 'customer.subscription.updated':
             //? occures when a subscription is updated from one plan to another or free to premium 
+            await handleChangeSubscriptionChange(event.data.object)
 
             break;
         case 'customer.subscription.deleted':
             //? occures when a customer subscription ends
-            const paymentMethod = event.data.object;
+             await handleChangeSubscriptionChange(event.data.object)
 
             break;
         default:
@@ -92,68 +93,6 @@ const weebHookHandler = async (payLoad: Buffer, signature: string) => {
             console.log(`No event matched - ${event.type}.`);
             break;
     }
-}
-
-const getPeriodEndTime = (payLoad: Stripe.Subscription) => {
-    const currentPeriodEndInMiliSeconds = payLoad.items.data[0]?.current_period_end!;
-
-    const cureentPeriodEnds = new Date(currentPeriodEndInMiliSeconds * 1000);
-
-    return cureentPeriodEnds;
-
-}
-
-const handleCheckOutSessionComplete = async (session: Stripe.Checkout.Session) => {
-    const userId = session.metadata?.userId as string;
-
-    //? getting the stripe customer id
-    const stripeCustomerId = session.customer as string;
-
-    //? getting the stripe subscriptionId
-    const stripeSubscriptionId = session.subscription as string;
-
-    if (!userId || !stripeSubscriptionId || !stripeCustomerId) {
-        throw new Error("Webhook failed!");
-    }
-
-    //? stripe subscription information getting
-    const subcriptionInformation = await stripe.subscriptions.retrieve(stripeSubscriptionId as string);
-
-    // console.log("subcription information",subcriptionInformation.items.data[0]);
-
-    //? getting the subscription end time
-
-    const cureentPeriodEnds = getPeriodEndTime(subcriptionInformation);
-
-    //? inserting into the database if not exist if exist updating it
-
-    await prisma.subscription.upsert({
-        where: {
-            userId
-        },
-        create: {
-            userId,
-            stripeCustomerId,
-            stripeSubscriptionId: stripeSubscriptionId,
-            current_period_end: cureentPeriodEnds
-        },
-        update: {
-            stripeCustomerId,
-            stripeSubscriptionId: stripeSubscriptionId,
-            current_period_end: cureentPeriodEnds
-        }
-    })
-
-}
-
-const hanleChangeSubscriptionChange = (payLoad : Stripe.Subscription)=>{
-    const stripeSubscriptionId = payLoad.id;
-
-    const status = (payLoad.status === "active"  || payLoad.status === "trialing") ?
-     SubscriptionStatus.ACTIVE : 
-     payLoad.status  === "canceled" ? SubscriptionStatus.CANCELED : SubscriptionStatus.EXPIRED;
-    
-    
 }
 
 export const subsbscriptionService = {
