@@ -8,11 +8,13 @@ model User {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
+  isPremium Boolean      @default(false)
+
   //? making an optional field 
   profile  Profile?
   comments Comment[]
   post     Post[]
-  Subscription Subscription?
+ Subscription Subscription?
 
   //?chganging the table name from user to users
   @@map("users")

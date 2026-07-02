@@ -6,9 +6,7 @@ import { userRouter } from "./modules/user/user.route";
 import { authRouter } from "./modules/auth/auth.routes";
 import { postRouter } from "./modules/post/post.route";
 import { commentRouter } from "./modules/comments/comments.route";
-import status from "http-status";
 import { notFound } from "./Middlewares/notfound";
-import sendResponse2 from "./utility/sendResponse2";
 import { globalErrorHandler } from "./Middlewares/globalErrorHandler";
 
 const app: Application = express();
