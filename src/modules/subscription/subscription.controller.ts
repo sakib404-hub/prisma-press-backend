@@ -17,8 +17,14 @@ const createCheckOutSession = catchAsync(async (req : Request, res : Response, n
         data : result
     })
 
+});
+
+
+const handleWeebHook = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
+
 })
 
 export const subscriptionontroller = {
-    createCheckOutSession
+    createCheckOutSession,
+    handleWeebHook
 }

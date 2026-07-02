@@ -62,6 +62,12 @@ const createCheckhOutSession = async (userId: string) => {
     };
 };
 
+
+const weebHookHandler = ()=>{
+
+}
+
 export const subsbscriptionService = {
-    createCheckhOutSession
+    createCheckhOutSession,
+    weebHookHandler
 }
