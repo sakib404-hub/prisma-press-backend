@@ -8,6 +8,7 @@ import { postRouter } from "./modules/post/post.route";
 import { commentRouter } from "./modules/comments/comments.route";
 import { notFound } from "./Middlewares/notfound";
 import { globalErrorHandler } from "./Middlewares/globalErrorHandler";
+import { subscriptionRouter } from "./modules/subscription/subscription.route";
 
 const app: Application = express();
 
@@ -35,6 +36,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);
 
 app.use('/api/comments', commentRouter);
+
+app.use('/api/subscription', subscriptionRouter)
 
 
 //? middleware for global error handler and not found route
