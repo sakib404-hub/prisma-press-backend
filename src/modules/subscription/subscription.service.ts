@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import config from "../../config/dotenv";
 import { prisma } from "../../lib/prisma";
 import stripe from "../../lib/strip";
+import { SubscriptionStatus } from "../../../generated/prisma/enums";
 
 const createCheckhOutSession = async (userId: string) => {
 
@@ -143,6 +144,16 @@ const handleCheckOutSessionComplete = async (session: Stripe.Checkout.Session) =
         }
     })
 
+}
+
+const hanleChangeSubscriptionChange = (payLoad : Stripe.Subscription)=>{
+    const stripeSubscriptionId = payLoad.id;
+
+    const status = (payLoad.status === "active"  || payLoad.status === "trialing") ?
+     SubscriptionStatus.ACTIVE : 
+     payLoad.status  === "canceled" ? SubscriptionStatus.CANCELED : SubscriptionStatus.EXPIRED;
+    
+    
 }
 
 export const subsbscriptionService = {
