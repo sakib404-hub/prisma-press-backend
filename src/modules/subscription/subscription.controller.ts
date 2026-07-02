@@ -22,6 +22,23 @@ const createCheckOutSession = catchAsync(async (req : Request, res : Response, n
 
 const handleWeebHook = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
 
+    //? getting the event from the stripe webhook
+    const event = req.body as Buffer;
+
+    //? getting the signature
+    const signature = req.headers['stripe-signature']! as string;
+
+
+    const result = await subsbscriptionService.weebHookHandler(event , signature);
+
+
+    return sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "Webhook handled successfully",
+        data : null
+    })
+
 })
 
 export const subscriptionontroller = {

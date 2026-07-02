@@ -39,32 +39,54 @@ const createCheckhOutSession = async (userId: string) => {
 
 
         const session = await stripe.checkout.sessions.create({
-            line_items : [
+            line_items: [
                 {
-                    price : config.stripe_price_id,
-                    quantity : 1
+                    price: config.stripe_price_id,
+                    quantity: 1
                 }
             ],
-            mode : "subscription",
-            customer : stripeCustomerId,
-            payment_method_types : ["card"],
-            success_url : `${config.front_end_url}/premium?success=true`,
-            cancel_url : `${config.front_end_url}/paymentFailed?success=false`,
-            metadata : {
-                userId : user.id
+            mode: "subscription",
+            customer: stripeCustomerId,
+            payment_method_types: ["card"],
+            success_url: `${config.front_end_url}/premium?success=true`,
+            cancel_url: `${config.front_end_url}/paymentFailed?success=false`,
+            metadata: {
+                userId: user.id
             }
         })
         return session.url;
     })
 
     return {
-        paymentUrl : transactionResult
+        paymentUrl: transactionResult
     };
 };
 
 
-const weebHookHandler = ()=>{
+const weebHookHandler = async (payLoad: Buffer, signature: string) => {
+    const endPointSecret = config.stripe_webhook_secret;
+    const event = stripe.webhooks.constructEvent(payLoad, signature, endPointSecret);
 
+
+    switch (event.type) {
+        case 'checkout.session.completed':
+        //? occures when a payment session is completed successfully
+            const paymentObject = event.data.object;
+            break;
+        case 'customer.subscription.updated':
+        //? occures when a subscription is updated from one plan to another or free to premium 
+           
+            break;
+        case 'customer.subscription.deleted':
+            //? occures when a customer subscription ends
+            const paymentMethod = event.data.object;
+          
+            break;
+        default:
+   
+            console.log(`No event matched - ${event.type}.`);
+            break;
+    }
 }
 
 export const subsbscriptionService = {
