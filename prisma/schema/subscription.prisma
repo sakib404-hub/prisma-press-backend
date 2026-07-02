@@ -13,8 +13,7 @@ model Subscription{
     // customerId
     stripeCustomerId String @unique
     // subsriptionId
-    
-    
+    stripeSubscriptionId String @unique
     
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
