@@ -14,7 +14,7 @@ model User {
   profile  Profile?
   comments Comment[]
   post     Post[]
- Subscription Subscription?
+  subscription Subscription?
 
   //?chganging the table name from user to users
   @@map("users")
