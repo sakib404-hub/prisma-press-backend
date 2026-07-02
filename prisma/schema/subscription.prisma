@@ -11,7 +11,7 @@ model Subscription{
 
     //? stripe related fields
     // customerId
-    
+    stripeCustomerId String @unique
     // subsriptionId
     
     

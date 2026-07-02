@@ -10,11 +10,12 @@ const config = {
   database_url: process.env.DATABASE_URL,
   bcrypt_salt_rounds: Number(process.env.BCRYPT_SALT_ROUNDS),
   app_url: process.env.APP_URL,
+  front_end_url : process.env.FRONT_END_URL,
   jwt_secret: process.env.JWT_SECRET!,
   jwt_refresh_secret: process.env.JWT_REFRESH_SECRET!,
   jwt_access_token_expiration: process.env.JWT_ACCESS_TOKEN_EXPIRATION!,
   jwt_refresh_token_expiration: process.env.JWT_REFRESH_TOKEN_EXPIRATION!,
-  product_id : process.env.STRIPE_PRODUCT_ID!,
+  stripe_price_id : process.env.STRIPE_PRICE_ID!,
   stripe_secret_key : process.env.STRIPE_SECRET_KEY!
 };
 
