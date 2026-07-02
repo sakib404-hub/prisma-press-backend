@@ -41,7 +41,21 @@ const handleWeebHook = catchAsync(async(req : Request, res : Response, next : Ne
 
 })
 
+const getSubscriptionStatus = catchAsync(async(req : Request , res : Response, next : NextFunction)=>{
+    const userId = req.user?.id;
+    const result = await subsbscriptionService.getSubscriptionStatus(userId as string);
+
+    return sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "Subscription Status retrived successfully",
+        data : result
+    });
+
+})
+
 export const subscriptionontroller = {
     createCheckOutSession,
-    handleWeebHook
+    handleWeebHook,
+    getSubscriptionStatus
 }
