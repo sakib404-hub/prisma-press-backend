@@ -31,11 +31,15 @@ app.get('/', async (req: Request, res: Response) => {
 
 //? creating the apis
 app.use('/api/user', userRouter);
+
 app.use('/api/auth', authRouter);
+
 app.use('/api/posts', postRouter);
+
 app.use('/api/comments', commentRouter);
 
 
+//? middleware for global error handler and not found route
 app.use(notFound);
 app.use(globalErrorHandler);
 

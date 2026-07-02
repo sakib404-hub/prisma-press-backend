@@ -1,0 +1,21 @@
+model Subscription{
+    id String @id @default(cuid())
+    
+    //? connectingg with the user id
+    userId String @unique
+    user User @relation(fields: [userId], references: [id], onDelete : Cascade)
+
+    status SubscriptionStatus @default(ACTIVE)
+    
+    current_period_end DateTime
+
+    //? stripe related fields
+    // customerId
+    
+    // subsriptionId
+    
+    
+    
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
