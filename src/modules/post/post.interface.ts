@@ -8,6 +8,7 @@ export interface ICreatePostPayLoad {
     isFeatured ? : boolean;
     status ? : PostStatus;
     tags : string[];
+    isPremium ? : boolean;
 }
 
 export interface IUpdatePostPayLoad {

@@ -3,6 +3,7 @@ import { CommentStaus, PostStatus } from "../../../generated/prisma/enums";
 import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { ICreatePostPayLoad, IPostQuery, IUpdatePostPayLoad } from "./post.interface";
+import { totalmem } from "node:os";
 
 
 const getAllPosts = async (query: IPostQuery) => {
@@ -10,6 +11,7 @@ const getAllPosts = async (query: IPostQuery) => {
     const limit = query.limit ? Number(query.limit) : 10;
     const page = query.page ? Number(query.page) : 1;
     const skip = (page - 1) * limit;
+    
 
     const sortBy = query.sortBy ? query.sortBy : 'createdAt';
     const sortOrder = query.sortOrder ? query.sortOrder : "asc";
@@ -82,6 +84,12 @@ const getAllPosts = async (query: IPostQuery) => {
         isPremium : false
     })
 
+     const totalPostCount = await prisma.post.count({
+        where : {
+            AND : andConditions
+        }
+    })
+
 
     {
 
@@ -106,7 +114,14 @@ const getAllPosts = async (query: IPostQuery) => {
                 [sortBy]: sortOrder
             }
         });
-        return result;
+        return{
+            data : result,
+            meta : {
+                page : page,
+                limit : limit,
+                total : Math.ceil(totalPostCount/limit)
+            }
+        };
     };
 }
 
@@ -302,6 +317,19 @@ const incrementViewCount2 = async (postId: string) => {
 }
 
 const createPost = async (payLoad: ICreatePostPayLoad, userId: string) => {
+    const user = await prisma.user.findUnique({
+        where : {
+            id : userId
+        },
+        include :{
+            subscription : true
+        }
+    });
+
+    if(payLoad.isPremium && user?.subscription?.status !== "ACTIVE")
+    {
+        throw new Error("You are not a premium user to create premium content");
+    }
 
     const result = await prisma.post.create({
         data: {
