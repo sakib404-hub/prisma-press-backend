@@ -10,6 +10,7 @@ import { notFound } from "./Middlewares/notfound";
 import { globalErrorHandler } from "./Middlewares/globalErrorHandler";
 import { subscriptionRouter } from "./modules/subscription/subscription.route";
 import stripe from "./lib/strip";
+import { PremiumRouter } from "./modules/Premium/premium.route";
 
 const app: Application = express();
 
@@ -99,6 +100,8 @@ app.use('/api/posts', postRouter);
 app.use('/api/comments', commentRouter);
 
 app.use('/api/subscription', subscriptionRouter);
+
+app.use('/api/premium', PremiumRouter);
 
 
 //? middleware for global error handler and not found route

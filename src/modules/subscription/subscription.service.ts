@@ -65,7 +65,6 @@ const createCheckhOutSession = async (userId: string) => {
     };
 };
 
-
 const weebHookHandler = async (payLoad: Buffer, signature: string) => {
     const endPointSecret = config.stripe_webhook_secret;
     const event = stripe.webhooks.constructEvent(payLoad, signature, endPointSecret);

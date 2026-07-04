@@ -42,6 +42,7 @@ const handleWeebHook = catchAsync(async(req : Request, res : Response, next : Ne
 })
 
 const getSubscriptionStatus = catchAsync(async(req : Request , res : Response, next : NextFunction)=>{
+    
     const userId = req.user?.id;
     const result = await subsbscriptionService.getSubscriptionStatus(userId as string);
 
