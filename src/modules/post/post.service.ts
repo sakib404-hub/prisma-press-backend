@@ -78,6 +78,10 @@ const getAllPosts = async (query: IPostQuery) => {
         })
     }
 
+    andConditions.push({
+        isPremium : false
+    })
+
 
     {
 
@@ -209,7 +213,8 @@ const incrementViewCount = async (postId: string) => {
 
     await prisma.post.update({
         where: {
-            id: postId
+            id: postId,
+            isPremium : false
         },
         data: {
             views: {
