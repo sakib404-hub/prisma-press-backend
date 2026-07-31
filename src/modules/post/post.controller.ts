@@ -20,6 +20,17 @@ const getAllPosts = catchAsync(async (req: Request, res: Response, next: NextFun
     })
 })
 
+const getAll = catchAsync(async(req : Request, res : Response, next : NextFunction)=>{
+    const result = await postService.getAll();
+
+    return sendResponse2(res, {
+        success : true,
+        statusCode : status.OK,
+        message : "All Post Fetched Successfully.",
+        data :  result
+    })
+})
+
 //? getting post states this will be done by the admin himself
 const getPostStats = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
@@ -126,6 +137,7 @@ const deletePost = catchAsync(async (req: Request, res: Response, next: NextFunc
 
 export const postController = {
     getAllPosts,
+    getAll,
     createPost,
     getPostStats,
     myPost,

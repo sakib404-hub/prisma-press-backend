@@ -33,6 +33,7 @@ const auth = (...requiredRoles : Role[])=>{
         if(!token){
             throw new Error("You are not logged in! please login first");
         }
+        // console.log("token", token);
 
         const verifyToken = jwtutils.verifyToken(token, config.jwt_secret);
 

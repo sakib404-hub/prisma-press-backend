@@ -3,7 +3,6 @@ import { CommentStaus, PostStatus } from "../../../generated/prisma/enums";
 import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { ICreatePostPayLoad, IPostQuery, IUpdatePostPayLoad } from "./post.interface";
-import { totalmem } from "node:os";
 
 
 const getAllPosts = async (query: IPostQuery) => {
@@ -93,7 +92,7 @@ const getAllPosts = async (query: IPostQuery) => {
 
     {
 
-        const result = await prisma.post.findMany({
+    const result = await prisma.post.findMany({
             where: {
                 AND: andConditions
             },
@@ -123,6 +122,20 @@ const getAllPosts = async (query: IPostQuery) => {
             }
         };
     };
+}
+
+
+const getAll = async () =>{
+    const result = await prisma.post.findMany({
+        include : {
+            author : {
+                omit : {
+                    password : true
+                }
+            }
+        }
+    });
+    return result;
 }
 
 const getPostStats = async () => {
@@ -419,5 +432,6 @@ export const postService = {
     createPost,
     updatePost,
     deletePost,
-    incrementViewCount2
+    incrementViewCount2,
+    getAll
 };

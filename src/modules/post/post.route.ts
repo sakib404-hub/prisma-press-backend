@@ -9,6 +9,8 @@ const router = Router();
 //? getting all the posts
 router.get('/', postController.getAllPosts);
 
+router.get('/getall', postController.getAll);
+
 //? this is for the admin
 router.get('/stats', auth(Role.ADMIN), postController.getPostStats);
 
